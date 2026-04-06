@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
-import { GoogleGenAI } from "@google/genai";
+import { getGeminiClient, GEMINI_MODEL } from "@/lib/gemini";
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import { saveChapter, getChapter, saveLexicon, getLexicon, getAllCachedChapters, clearAllCache, deleteCachedChapter, saveBibliology, getBibliology } from '@/lib/db';
@@ -2142,13 +2142,19 @@ export default function BibleApp() {
       const cached = await getBibliology(bookName);
       if (cached) {
         setBibliologyContent(cached.content);
+        setIsLoadingContent(false);
+        return;
+      }
+
+      const ai = getGeminiClient();
+      if (!ai) {
+        setBibliologyContent(t('chapter_content_fallback_2'));
         setIsLoadingBibliology(false);
         return;
       }
 
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY! });
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: GEMINI_MODEL,
         contents: `Forneça uma bibliologia detalhada para o livro bíblico "${bookName}". 
         Inclua as seguintes seções formatadas em Markdown:
         1. **História e Objetivo**: O propósito pelo qual o livro foi escrito.
@@ -2680,11 +2686,14 @@ export default function BibleApp() {
         }
       }
 
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || '' });
+      const ai = getGeminiClient();
+      if (!ai) {
+        throw new Error("AI Client not available");
+      }
       const bookNameEn = getEnglishBookName(bookId);
       
       const model = ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: GEMINI_MODEL,
         contents: [{ role: 'user', parts: [{ text: `Provide the full text of chapter ${chapter} of the book of ${bookNameEn} of the Bible (version ${version.name}). Return only a JSON array in the format: [{"verse": 1, "text": "..."}, ...]. Do not include explanations or markdown formatting. RESPOND IN THE LANGUAGE: ${version.language}.` }] }],
       });
       
@@ -2775,9 +2784,11 @@ export default function BibleApp() {
     if (!versionSearchQuery.trim()) return;
     setIsSearchingVersions(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || '' });
+      const ai = getGeminiClient();
+      if (!ai) throw new Error("AI Client not available");
+      
       const model = ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: GEMINI_MODEL,
         contents: [{ role: 'user', parts: [{ text: `Search for Bible versions related to: "${versionSearchQuery}". Return a list of up to 5 versions in JSON format: [{"id": "string_slug", "name": "Version Name", "language": "Language", "description": "Brief description"}]. Respond in the language: ${getActiveLang()}. Do not include markdown.` }] }],
       });
       const response = await model;
@@ -2805,9 +2816,11 @@ export default function BibleApp() {
     if (!query.trim()) return;
     setIsSearching(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || '' });
+      const ai = getGeminiClient();
+      if (!ai) throw new Error("AI Client not available");
+      
       const model = ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: GEMINI_MODEL,
         contents: [{ role: 'user', parts: [{ text: `Search the Bible (version ${selectedVersion.name}) for verses related to: "${query}". Return a list of up to 10 verses in JSON format: [{"bookId": number, "chapter": number, "verse": number, "text": "...", "reference": "..."}]. Use standard book IDs (1-66). Respond in the language: ${getActiveLang()}. Do not include explanations or markdown.` }] }],
       });
       
@@ -2853,12 +2866,11 @@ export default function BibleApp() {
         return;
       }
 
-      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-      if (!apiKey) {
+      const ai = getGeminiClient();
+      if (!ai) {
         throw new Error("API Key not configured");
       }
 
-      const ai = new GoogleGenAI({ apiKey });
       const activeLang = getActiveLang();
       const prompt = `Analyze the word "${word}" in the context of the verse: "${verseText}" (${reference}) of the Bible (version ${selectedVersion.name}).
       Provide a deep lexical study in JSON format. RESPOND IN THE LANGUAGE: ${activeLang}.
@@ -2881,7 +2893,7 @@ export default function BibleApp() {
       If the word is a translation addition, identify the original word it completes. Return only the JSON.`;
 
       const model = ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: GEMINI_MODEL,
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
       });
       
@@ -3606,6 +3618,15 @@ export default function BibleApp() {
                   <span className="text-[12rem] font-headline font-extrabold leading-none">LEX</span>
                 </div>
                 <h2 className="font-headline text-5xl font-extrabold tracking-tight text-primary mb-2">{t('customization')}</h2>
+                <div className="flex flex-wrap items-center gap-4 mb-4">
+                  <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'bg-green-500/10 text-green-600 border border-green-500/20' : 'bg-red-500/10 text-red-600 border border-red-500/20'}`}>
+                    <span className="material-symbols-outlined text-xs">{process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'check_circle' : 'error'}</span>
+                    AI {process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'Online' : 'Offline'}
+                  </div>
+                  {!process.env.NEXT_PUBLIC_GEMINI_API_KEY && (
+                    <p className="text-[10px] text-on-surface/40 italic">{t('chapter_content_fallback_2')}</p>
+                  )}
+                </div>
                 <div className="flex justify-between items-start gap-4">
                   <p className="font-body text-xl text-on-surface-variant max-w-lg">{t('customization_desc')}</p>
                   <button 
