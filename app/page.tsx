@@ -444,9 +444,9 @@ const UI_STRINGS: Record<string, Record<string, string | Record<number, string>>
     confirm_remove_favorite: "Remover dos favoritos?",
     removed: "Removido!",
     dev_name: "Augusto Gonçalves",
-    dev_title: "Desenvolvedor & Teólogo",
-    dev_bio: "Dedicado a unir tecnologia e espiritualidade para tornar as Escrituras acessíveis a todos, em qualquer lugar.",
-    dev_email: "agoncalvesprecher@gmail.com",
+    dev_title: "(Desenvolvedor e Pregador do Evangelho de Cristo Jesus)",
+    dev_bio: "Dedicado à promoção do conhecimento e ao aprofundamento da compreensão das Escrituras e da espiritualidade cristã, procuro criar ferramentas que tornem a Palavra acessível a todos, em qualquer lugar.",
+    dev_email: "augustogoncalvesapostly@gmail.com",
     dev_whatsapp: "+244 972 664 768",
     dev_facebook: "Augusto Gonçalves",
     dev_whatsapp_url: "https://wa.me/244972664768",
@@ -725,9 +725,9 @@ const UI_STRINGS: Record<string, Record<string, string | Record<number, string>>
     confirm_remove_favorite: "Remover dos favoritos?",
     removed: "Removido!",
     dev_name: "Augusto Gonçalves",
-    dev_title: "Desenvolvedor & Teólogo",
-    dev_bio: "Dedicado a unir tecnologia e espiritualidade para tornar as Escrituras acessíveis a todos, em qualquer lugar.",
-    dev_email: "agoncalvesprecher@gmail.com",
+    dev_title: "(Desenvolvedor e Pregador do Evangelho de Cristo Jesus)",
+    dev_bio: "Dedicado à promoção do conhecimento e ao aprofundamento da compreensão das Escrituras e da espiritualidade cristã, procuro criar ferramentas que tornem a Palavra acessível a todos, em qualquer lugar.",
+    dev_email: "augustogoncalvesapostly@gmail.com",
     dev_whatsapp: "+244 972 664 768",
     dev_facebook: "Augusto Gonçalves",
     dev_whatsapp_url: "https://wa.me/244972664768",
@@ -1048,9 +1048,9 @@ const UI_STRINGS: Record<string, Record<string, string | Record<number, string>>
     removed: "Removed!",
     no_favorites: "You haven't favorited any verses yet.",
     dev_name: "Augusto Gonçalves",
-    dev_title: "Developer & Theologian",
-    dev_bio: "Dedicated to bridging technology and spirituality to make the Scriptures accessible to everyone, everywhere.",
-    dev_email: "agoncalvesprecher@gmail.com",
+    dev_title: "(Developer and Preacher of the Gospel of Jesus Christ)",
+    dev_bio: "Dedicated to the promotion of knowledge and deepening the understanding of the Scriptures and Christian spirituality, I seek to create tools that make the Word accessible to everyone, everywhere.",
+    dev_email: "augustogoncalvesapostly@gmail.com",
     dev_whatsapp: "+244 972 664 768",
     dev_facebook: "Augusto Gonçalves",
     dev_whatsapp_url: "https://wa.me/244972664768",
@@ -1343,10 +1343,10 @@ const UI_STRINGS: Record<string, Record<string, string | Record<number, string>>
     confirm_remove_favorite: "¿Quitar de favoritos?",
     removed: "¡Eliminado!",
     no_favorites: "Aún no has marcado ningún versículo como favorito.",
-    dev_name: "Shalah Augusto Gonçalves",
-    dev_title: "Desarrollador y Teólogo",
-    dev_bio: "Dedicado a unir la tecnología y la espiritualidad para que las Escrituras sean accesibles para todos, en cualquier lugar.",
-    dev_email: "agoncalvesprecher@gmail.com",
+    dev_name: "Augusto Gonçalves",
+    dev_title: "(Desarrollador y Predicador del Evangelio de Cristo Jesús)",
+    dev_bio: "Dedicado a la promoción del conocimiento y a profundizar la comprensión de las Escrituras y la espiritualidad cristiana, busco crear herramientas que hagan la Palabra accesible para todos, en cualquier lugar.",
+    dev_email: "augustogoncalvesapostly@gmail.com",
     dev_whatsapp: "+244 972 664 768",
     dev_facebook: "Shalah Augusto Gonçalves",
     dev_whatsapp_url: "https://wa.me/244972664768",
@@ -1712,10 +1712,10 @@ const UI_STRINGS: Record<string, Record<string, string | Record<number, string>>
     confirm_remove_favorite: "Retirer des favoris ?",
     removed: "Retiré !",
     no_favorites: "Vous n'avez pas encore mis de versets en favoris.",
-    dev_name: "Shalah Augusto Gonçalves",
-    dev_title: "Développeur & Théologien",
-    dev_bio: "Dédié à l'union de la technologie et de la spiritualité pour rendre les Écritures accessibles à tous, partout.",
-    dev_email: "agoncalvesprecher@gmail.com",
+    dev_name: "Augusto Gonçalves",
+    dev_title: "(Développeur et Prédicateur de l'Évangile de Jésus-Christ)",
+    dev_bio: "Dédié à la promotion de la connaissance et à l'approfondissement de la compréhension des Écritures et de la spiritualité chrétienne, je cherche à créer des outils qui rendent la Parole accessible à tous, partout.",
+    dev_email: "augustogoncalvesapostly@gmail.com",
     dev_whatsapp: "+244 972 664 768",
     dev_facebook: "Shalah Augusto Gonçalves",
     dev_whatsapp_url: "https://wa.me/244972664768",
@@ -2643,7 +2643,7 @@ export default function BibleApp() {
 
   const sendFeedback = () => {
     if (!feedbackMessage.trim()) return;
-    window.location.href = `mailto:agoncalvesprecher@gmail.com?subject=Feedback Biblia App&body=${encodeURIComponent(feedbackMessage)}`;
+    window.location.href = `mailto:augustogoncalvesapostly@gmail.com?subject=Feedback Biblia App&body=${encodeURIComponent(feedbackMessage)}`;
     setFeedbackMessage('');
     showToast(t('feedback_thanks'), 'success');
   };
@@ -3054,10 +3054,10 @@ export default function BibleApp() {
                       animate={{ opacity: 1, scale: 1 }}
                       key={randomVerse.reference}
                       onClick={() => handleVerseClick(randomVerse)}
-                      className="bg-tertiary-container text-[#1a3a3a] rounded-[2.5rem] p-8 flex flex-col justify-between h-64 md:h-72 cursor-pointer hover:shadow-xl transition-all group relative overflow-hidden border border-tertiary/10"
+                      className="bg-tertiary-container text-on-tertiary-container rounded-[2.5rem] p-8 flex flex-col justify-between h-64 md:h-72 cursor-pointer hover:shadow-xl transition-all group relative overflow-hidden border border-tertiary/10"
                     >
                       {/* Background Image for Versículo Fluente */}
-                      <div className="absolute inset-0 opacity-10 group-hover:opacity-30 transition-opacity duration-1000">
+                      <div className="absolute inset-0 opacity-10 group-hover:opacity-30 transition-opacity duration-1000 dark:bg-black/40">
                         <Image 
                           src="https://picsum.photos/seed/spirit/800/800"
                           alt="Spiritual Background"
@@ -3081,10 +3081,10 @@ export default function BibleApp() {
                   ) : (
                     <div 
                       onClick={() => dailyVerse && handleVerseClick(dailyVerse)}
-                      className="bg-secondary-container text-[#785a1a] rounded-[2.5rem] p-8 flex flex-col justify-between h-64 md:h-72 cursor-pointer hover:shadow-xl transition-all group relative overflow-hidden"
+                      className="bg-secondary-container text-on-secondary-container rounded-[2.5rem] p-8 flex flex-col justify-between h-64 md:h-72 cursor-pointer hover:shadow-xl transition-all group relative overflow-hidden"
                     >
                       {/* Background Image for Versículo do Dia */}
-                      <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-700">
+                      <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-700 dark:bg-black/40">
                         <Image 
                           src="https://picsum.photos/seed/bible/800/800"
                           alt="Bible Background"

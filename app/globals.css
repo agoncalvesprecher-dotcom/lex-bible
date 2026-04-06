@@ -15,6 +15,7 @@
   --color-surface-container-high: var(--app-surface-high, #ece8df);
   --color-primary-container: var(--app-primary-container, #004d40);
   --color-secondary-container: var(--app-secondary-container, #fed488);
+  --color-on-secondary-container: var(--app-on-secondary-container, #4b3a00);
   --color-on-surface: var(--app-text, #1d1c16);
   --color-tertiary: var(--app-tertiary, #386663);
   --color-tertiary-container: var(--app-tertiary-container, #bcece7);
@@ -53,6 +54,7 @@
   --app-secondary: #fed488;
   --app-primary-container: #00695c;
   --app-secondary-container: #775a19;
+  --app-on-secondary-container: #fed488;
   --app-tertiary: #a0d0cb;
   --app-tertiary-container: #1e4e4b;
   --app-on-tertiary-container: #bcece7;

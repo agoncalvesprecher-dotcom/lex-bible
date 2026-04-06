@@ -1,0 +1,88 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Fields: name (string), email (string), provider (string), createdAt (timestamp), role (string)
+    //
+    // Collection: subscriptions
+    // Fields: userId (string), planId (string), status (string), startDate (timestamp), endDate (timestamp), trialUsed (bool), cancelAtPeriodEnd (bool)
+    //
+    // Collection: plans
+    // Fields: name (string), price (number), currency (string), durationDays (int), features (map), stripePriceId (string)
+    //
+    // Collection: payment_proofs
+    // Fields: userId (string), planId (string), imageUrl (string), verified (bool), verifiedAt (timestamp), createdAt (timestamp), amount (number), reference (string)
+    //
+    // Collection: usage_limits
+    // Fields: userId (string), date (string), lexicalQueriesCount (int)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "AGoncalvesprecher@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUrl(url) {
+      return url is string && (url.matches("^https://.*") || url.matches("^http://.*"));
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == userId && 
+                    request.resource.data.role == 'user' &&
+                    isValidEmail(request.resource.data.email);
+      allow update: if (isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin();
+    }
+
+    match /subscriptions/{subscriptionId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      // Subscriptions are created by server (Stripe webhook) or admin
+      allow create, update: if isAdmin();
+      // Users can read their own subscriptions via query
+      allow list: if isAuthenticated() && request.query.limit <= 10 && 
+                  (request.query.filters.userId == request.auth.uid || isAdmin());
+    }
+
+    match /plans/{planId} {
+      allow read: if true; // Plans are public
+      allow write: if isAdmin();
+    }
+
+    match /payment_proofs/{proofId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid &&
+                    isValidUrl(request.resource.data.imageUrl) &&
+                    request.resource.data.verified == false;
+      allow update: if isAdmin();
+    }
+
+    match /usage_limits/{limitId} {
+      allow read, write: if isOwner(request.resource.data.userId || resource.data.userId);
+    }
+  }
+}
